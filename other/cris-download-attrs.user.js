@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         CRIS Inventory Downloader (Revised)
 // @namespace    http://jmann.me
-// @version      0.1.0
+// @version      0.1.1
 // @description  Automates the process of extracting data and downloading PDFs from CRIS, using MutationObservers.
 // @match        https://cris.parks.ny.gov/Default.aspx
 // @grant        GM_download

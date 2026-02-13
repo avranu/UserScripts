@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Library of Congress - Download Image
 // @namespace    http://jmann.me
-// @version      0.1.0
+// @version      0.1.1
 // @description  Download the highest quality images from the Library of Congress and rename them based on metadata
 // @author       Jess Mann
 // @match        https://www.loc.gov/resource/*

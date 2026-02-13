@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YouTube - Feed Filters (Configurable)
 // @namespace    http://jmann.me
-// @version      0.1.0
+// @version      0.1.1
 // @description  Configurable YouTube feed filters: hide low-views (except subs), old videos, shorts shelves, watched videos.
 // @author       Jess Mann
 // @match        https://www.youtube.com/*

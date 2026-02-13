@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name     Instagram Hide Nonsense
 // @namespace    http://jmann.me
-// @version  0.1.0
+// @version  0.1.1
 // @match    https://www.instagram.com/
 // @description Hides recommended/suggested/discovery posts on Instagram home feed, with a focus on those that are likely ads or influencer content. Provides a settings panel to customize behavior and maintain a whitelist of phrases to avoid hiding content you're interested in.
 // ==/UserScript==
@@ -32,6 +32,8 @@
     };
 
     // --- Route/host guards -----------------------------------------------------
+    // This is necessary for Hermit, because it does not abide by @match directives for userscripts.
+    // -- therefore, with this removed, it would run on every site.
     const isInstagramHost = () => {
         const hostname = window.location.hostname.toLowerCase();
         return (
@@ -980,18 +982,10 @@
     const disable = () => {
         if (!state.enabled) return;
         state.enabled = false;
-
-        // Keep widget as a subtle “stopped” indicator (optional).
         const widget = document.getElementById(CONFIG.ui.widgetId);
-        if (widget) {
-            const dot = widget.querySelector('.dot');
-            if (dot) dot.style.background = '#e74c3c';
-            const count = widget.querySelector('.count');
-            if (count) count.textContent = 'Paused (not home)';
-        }
 
-        // Optional: remove widget entirely when not on home.
-        // if (widget && widget.parentElement) widget.parentElement.removeChild(widget);
+        // remove widget entirely when not on home.
+        if (widget && widget.parentElement) widget.parentElement.removeChild(widget);
     };
 
     const hookSpaNavigation = () => {

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Download Clipping from Newspapers.com
 // @namespace    http://jmann.me
-// @version      0.1.0
+// @version      0.1.1
 // @description  Download newspaper clippings and rename them based on metadata
 // @author       Jess Mann
 // @match        https://www.newspapers.com/article/*

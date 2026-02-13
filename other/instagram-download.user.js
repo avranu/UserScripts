@@ -1,6 +1,7 @@
 // ==UserScript==
 // @name         Instagram Downloader
-// @version      1.1
+// @namespace    http://jmann.me
+// @version      0.1.0
 // @description  Adds a download button to Instagram posts dynamically using observers
 // @author       Jess Mann
 // @match        *://www.instagram.com/*

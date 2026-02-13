@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Wayback - Download Images and Rename
-// @namespace    http://tampermonkey.net/
-// @version      1.2.0
+// @namespace    http://jmann.me
+// @version      0.1.0
 // @description  Download images and rename them based on page text
 // @author
 // @match        https://web.archive.org/web/*historic51.org/*

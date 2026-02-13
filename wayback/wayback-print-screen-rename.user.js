@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         Wayback - Auto Print Screen and Click
-// @namespace    Violentmonkey Scripts
+// @namespace    http://jmann.me
 // @match        https://archive.org/details/*
 // @grant        none
-// @version      1.0.0
+// @version      0.1.0
 // @author       -
 // @date         2024-05-14
 // ==/UserScript==

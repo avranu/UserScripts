@@ -1,6 +1,7 @@
 // ==UserScript==
 // @name     Instagram Hide Nonsense
-// @version  1.6
+// @namespace    http://jmann.me
+// @version  0.1.0
 // @match    https://www.instagram.com/
 // @description Hides recommended/suggested/discovery posts on Instagram home feed, with a focus on those that are likely ads or influencer content. Provides a settings panel to customize behavior and maintain a whitelist of phrases to avoid hiding content you're interested in.
 // ==/UserScript==

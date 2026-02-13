@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         CRIS Inventory Downloader (Revised)
-// @namespace    http://tampermonkey.net/
-// @version      1.1
+// @namespace    http://jmann.me
+// @version      0.1.0
 // @description  Automates the process of extracting data and downloading PDFs from CRIS, using MutationObservers.
 // @match        https://cris.parks.ny.gov/Default.aspx
 // @grant        GM_download
@@ -118,7 +118,7 @@
 				// 7. Simulate clicking the "Inventory Form" button to reveal the direct link
 				//    or trigger any dynamic link generation
 				inventoryButton.click();
-				
+
 				await sleep(500);
 
 				// 10. Close the dialog

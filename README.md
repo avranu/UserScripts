@@ -1,58 +1,173 @@
 # Violentmonkey Automation Scripts
 
-This repository contains a collection of custom userscripts designed to enhance and automate specific web browsing tasks using Violentmonkey. These scripts streamline workflows, remove clutter, and add functionality to various websites.
+A collection of userscripts designed to enhance and automate web browsing workflows using **Violentmonkey** (compatible with Tampermonkey and Greasemonkey).
 
-![Instagram Mobile Screenshot with Markup](docs/media/Instagram%20Mobile%20Screenshot%20with%20Markup.png)
+These scripts reduce clutter, streamline repetitive tasks, and restore control over algorithm-driven interfaces.
 
-## Scripts Overview
+<p align="center">
+  <img src="docs/media/Instagram%20Mobile%20Screenshot%20with%20Markup.png"
+       alt="Instagram Mobile Screenshot with Markup"
+       width="420">
+</p>
+
+---
+
+## Overview
+
+This repository contains scripts for these platforms:
+
+- YouTube
+- Instagram
+- Flickr
+- Library of Congress
+- Wayback Machine
+- Newspaper archives
+- CRIS
+
+Each script is designed to solve a specific friction point.
+
+---
+
+## Scripts
 
 ### `youtube-filters.user.js`
-- **Purpose**: Focus on subscriptions and recent content, not ads.
-   * Keeps track of your subscriptions.
-   * Hides the "Shorts" section on YouTube's homepage.
-   * Hides videos older than a specific number of years.
-   * Hides videos already watched.
-- **Use Case**: Youtube does not allow hiding the shorts section for more than 30 days. It's also recently pushing 6-10 year old videos into my feed, and is repeatedly suggesting videos I've already watched. This script addresses all of these issues.
 
-### `wayback-download-images.user.js`
-- **Purpose**: Downloads images from the Wayback Machine and renames them based on page text.
-- **Use Case**: Saves historical images with meaningful filenames.
+**Purpose**  
+Prioritize subscriptions and recent content while eliminating distractions.
 
-### `wayback-auto-print-screen.user.js`
-- **Purpose**: Automates taking print screens and clicking elements on the Wayback Machine.
-- **Use Case**: Efficiently processes multiple archived pages.
+**Features**
+- Hides the *Shorts* section.
+- Hides videos older than a configurable number of years.
+- Hides previously watched videos.
+- Reduces algorithmic resurfacing of stale content.
 
-### `flickr-image-downloader.user.js`
-- **Purpose**: Adds a download button to images on Flickr.
-- **Use Case**: Flickr does not allow downloading images.
+**Why**  
+YouTube increasingly pushes older content, Shorts, and repeat suggestions. This script restores a subscription-first browsing experience.
 
-### `cris-download-attrs.user.js`
-- **Purpose**: Automates the process of extracting data and downloading PDFs from CRIS, using MutationObservers.
-- **Use Case**: Extracting images from CRIS with attached metadata about each image.
-
-### `loc.user.js`
-- **Purpose**: Download the highest quality images from the Library of Congress and rename them based on metadata
-- **Use Case**: Downloading and indexing library of congress assets along with their metadata.
-
-### `newspaper-com-download.user.js`
-- **Purpose**: Download newspaper clippings and rename them based on metadata
-- **Use Case**: Downloading and indexing newspaper clippings along with their metadata.
+---
 
 ### `instagram.user.js`
-- **Purpose**: Hides recommended/suggested/discovery posts on Instagram home feed, with a focus on those that are likely ads or influencer content. Provides a settings panel to customize behavior and maintain a whitelist of phrases to avoid hiding content you're interested in.
-- **Use Case**: Focus on subscriptions, not on advertising. Instagram's algorithm watches your behavior and adapts content to 'string you along' into continuously scrolling. This is exhausting. This script hides things you didn't ask for, while still allowing you to discover new content and see your subscriptions.
 
-![Instagram Mobile Screenshot](docs/media/Instagram%20Mobile%20Screenshot.png)
-![Instagram Mobile Settings](docs/media/Instagram%20Mobile%20Settings.png)
+**Purpose**  
+Remove recommended, suggested, and discovery posts from the Instagram home feed.
 
-This can also be used with Hermit (mobile app) to provide a mobile app experience.
- 
-## Usage Instructions
+**Features**
+- Hides algorithm-driven content.
+- Settings panel for customization.
+- Phrase whitelist support.
+- Focus on subscription-based content only.
 
-1. **Install GreaseMonkey, Violentmonkey, or Tampermonkey**:
-   - These extensions are required to run userscripts. Available for most modern browsers. Due to recent changes in Chrome, you may need to install Brave to use Violentmonkey.
-2. **Add Scripts**:
-   - Copy and paste the content of each `.js` file into a new script in your userscript manager.
+**Why**  
+Instagram optimizes for engagement loops. This script removes content you did not explicitly opt into while preserving control over discovery.
+
+<p align="center">
+  <img src="docs/media/Instagram%20Mobile%20Screenshot.png"
+       alt="Instagram Home Feed with Suggested Content Hidden"
+       width="380">
+</p>
+
+<p align="center">
+  <img src="docs/media/Instagram%20Mobile%20Settings.png"
+       alt="Instagram Settings Panel"
+       width="380">
+</p>
+
+**Mobile usage**  
+Works well with the **Hermit** mobile app to provide a lightweight mobile app experience.
+
+---
+
+### `wayback-download-images.user.js`
+
+**Purpose**  
+Download images from the Wayback Machine and rename them using contextual page text.
+
+**Use case**  
+Preserve historical content with meaningful filenames for archival workflows.
+
+---
+
+### `wayback-auto-print-screen.user.js`
+
+**Purpose**  
+Automate screenshot capture and interaction within the Wayback Machine.
+
+**Use case**  
+Efficiently process large sets of archived pages.
+
+---
+
+### `flickr-image-downloader.user.js`
+
+**Purpose**  
+Add a download button to Flickr image pages.
+
+**Use case**  
+Enable image downloads where direct download functionality is restricted.
+
+---
+
+### `cris-download-attrs.user.js`
+
+**Purpose**  
+Extract metadata and automate PDF downloads from CRIS using `MutationObserver`.
+
+**Use case**  
+Bulk extraction of images and associated structured metadata.
+
+---
+
+### `loc.user.js`
+
+**Purpose**  
+Download the highest-quality images from the Library of Congress and rename them using official metadata.
+
+**Use case**  
+Archival indexing and structured digital asset management.
+
+---
+
+### `newspaper-com-download.user.js`
+
+**Purpose**  
+Download newspaper clippings and rename them using structured metadata.
+
+**Use case**  
+Historical research and indexed archival workflows.
+
+---
+
+## Installation
+
+1. Install a userscript manager:
+   - **Violentmonkey** (recommended)
+   - Tampermonkey
+   - Greasemonkey
+
+   > Note: Due to Chrome extension policy changes, Brave may be required to use Violentmonkey.
+
+2. Add a script:
+   - Open your userscript manager.
+   - Create a new script.
+   - Paste the contents of the desired `.user.js` file.
+   - Save and enable.
+
+---
+
+## Philosophy
+
+Modern web platforms optimize for engagement, not user intent.
+
+These scripts are designed to:
+- Restore focus
+- Reduce manipulation
+- Eliminate repetitive friction
+- Support archival and research workflows
+
+They prioritize control and clarity over algorithmic distraction.
+
+---
 
 ## Author
-Created and maintained by **Jess Mann**.
+
+Maintained by **Jess Mann**

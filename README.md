@@ -127,7 +127,7 @@ Archival indexing and structured digital asset management.
 
 Screenshot of the interface (new button at top right):
 <p align="center">
-  <img src="docs/media/LOC%20Results.png"
+  <img src="docs/media/LOC%20Screenshot.png"
        alt="Library of Congress Downloaded File Screenshot"
        width="380">
 </p>

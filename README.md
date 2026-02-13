@@ -6,10 +6,10 @@ This repository contains a collection of custom userscripts designed to enhance 
 
 ### `youtube-filters.user.js`
 - **Purpose**: Focus on subscriptions and recent content, not ads.
-** Keeps track of your subscriptions.
-** Hides the "Shorts" section on YouTube's homepage.
-** Hides videos older than a specific number of years.
-** Hides videos already watched.
+* * Keeps track of your subscriptions.
+* * Hides the "Shorts" section on YouTube's homepage.
+* * Hides videos older than a specific number of years.
+* * Hides videos already watched.
 - **Use Case**: Youtube does not allow hiding the shorts section for more than 30 days. It's also recently pushing 6-10 year old videos into my feed, and is repeatedly suggesting videos I've already watched. This script addresses all of these issues.
 
 ### `wayback-download-images.user.js`

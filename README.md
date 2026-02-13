@@ -2,6 +2,8 @@
 
 This repository contains a collection of custom userscripts designed to enhance and automate specific web browsing tasks using Violentmonkey. These scripts streamline workflows, remove clutter, and add functionality to various websites.
 
+![Instagram Mobile Screenshot with Markup](docs/media/Instagram%20Mobile%20Screenshot%20with%20Markup.png)
+
 ## Scripts Overview
 
 ### `youtube-filters.user.js`
@@ -39,6 +41,9 @@ This repository contains a collection of custom userscripts designed to enhance 
 ### `instagram.user.js`
 - **Purpose**: Hides recommended/suggested/discovery posts on Instagram home feed, with a focus on those that are likely ads or influencer content. Provides a settings panel to customize behavior and maintain a whitelist of phrases to avoid hiding content you're interested in.
 - **Use Case**: Focus on subscriptions, not on advertising. Instagram's algorithm watches your behavior and adapts content to 'string you along' into continuously scrolling. This is exhausting. This script hides things you didn't ask for, while still allowing you to discover new content and see your subscriptions.
+
+![Instagram Mobile Screenshot](docs/media/Instagram%20Mobile%20Screenshot.png)
+![Instagram Mobile Settings](docs/media/Instagram%20Mobile%20Settings.png)
 
 This can also be used with Hermit (mobile app) to provide a mobile app experience.
  

@@ -125,6 +125,27 @@ Download the highest-quality images from the Library of Congress and rename them
 **Use case**  
 Archival indexing and structured digital asset management.
 
+Screenshot of the interface (new button at top right):
+<p align="center">
+  <img src="docs/media/LOC%20Results.png"
+       alt="Library of Congress Downloaded File Screenshot"
+       width="380">
+</p>
+
+Screenshot of the retrieved metadata from another file (as reported in the console):
+<p align="center">
+   <img src="docs/media/LOC%20Metadata.png"
+          alt="Library of Congress Metadata Screenshot"
+          width="380">
+</p>
+
+Screenshot of the final downloaded file:
+<p align="center">
+   <img src="docs/media/LOC%20Results.png"
+            alt="Library of Congress Downloaded File Screenshot"
+            width="380">
+</p>
+
 ---
 
 ### `newspaper-com-download.user.js`

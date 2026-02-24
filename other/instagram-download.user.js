@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Instagram Downloader
-// @namespace    http://jmann.me
+// @namespace    https://jmann.me
 // @version      0.1.1
-// @description  Adds a download button to Instagram posts dynamically using observers
+// @description  Adds a download button to Instagram posts, automatically naming photos with the post metadata. Also supports automatic downloading of all photos in a profile feed.
 // @author       Jess Mann
 // @match        *://www.instagram.com/*
 // @match        *://instagram.com/*
@@ -26,6 +26,43 @@
 		'/reels',
 	];
 
+	const css = `
+        #ig-download-button {
+            background-color: #333;
+            opacity: 0.4;
+            border-radius: 5px;
+            position: fixed;
+            top: 10px;
+            right: 4em;
+            z-index: 1000;
+            padding: 10px;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        #ig-download-button:hover {
+            background-color: #343;
+            opacity: 1;
+        }
+        #ig-download-button.disabled {
+            display: none;
+            background-color: #333;
+            opacity: 0.2;
+            cursor: not-allowed;
+        }
+        div.ig-download-notification {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            z-index: 1000;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+    `;
+
 	async function waitFor(ms) {
 		return new Promise(resolve => setTimeout(resolve, ms));
 	}
@@ -34,15 +71,8 @@
 		try {
 			// Pop up a notification at the bottom right of the screen that there is a carosel
 			const notification = document.createElement('div');
+			notification.classList.add('ig-download-notification');
 			notification.textContent = message;
-			notification.style.position = 'fixed';
-			notification.style.bottom = '10px';
-			notification.style.right = '10px';
-			notification.style.zIndex = 1000;
-			notification.style.padding = '10px';
-			notification.style.backgroundColor = '#007bff';
-			notification.style.color = 'white';
-			notification.style.border = 'none';
 			document.body.appendChild(notification);
 
 			// After 3 seconds, remove the notification
@@ -61,15 +91,6 @@
 		const button = document.createElement('button');
 		button.id = 'ig-download-button';
 		button.textContent = 'Download';
-		button.style.position = 'fixed';
-		button.style.top = '10px';
-		button.style.right = '4em';
-		button.style.zIndex = 1000;
-		button.style.padding = '10px';
-		button.style.backgroundColor = '#28a745';
-		button.style.color = 'white';
-		button.style.border = 'none';
-		button.style.cursor = 'pointer';
 		document.body.appendChild(button);
 
 		button.addEventListener('click', handleDownloadClick);
@@ -82,7 +103,7 @@
 		console.debug('Enabling button');
 		if (button) {
 			button.textContent = 'Download';
-			button.style.backgroundColor = '#28a745';
+			button.classList.remove('disabled');
 		} else {
 			createDownloadButton();
 		}
@@ -93,7 +114,7 @@
 		console.debug('Disabling button');
 		if (button) {
 			button.textContent = 'Stop';
-			button.style.backgroundColor = '#dc3545';
+			button.classList.add('disabled');
 		}
 	}
 
@@ -104,7 +125,7 @@
 			if (button.style.display === 'none') {
 				return true;
 			}
-			return button.textContent === 'Stop';
+			return button.classList.contains('disabled');
 		}
 		return false;
 	}
@@ -550,6 +571,13 @@
 		}
 	}
 
+	function inject_css() {
+		const style = document.createElement('style');
+		style.textContent = css;
+		document.head.appendChild(style);
+	}
+
+	inject_css();
 	createDownloadButton();
 	observePageChanges();
 	observePhotoAdded();

@@ -30,35 +30,18 @@ Each script is designed to solve a specific friction point.
 
 ## Scripts
 
-### `youtube-filters.user.js`
-
-**Purpose**  
-Prioritize subscriptions and recent content while eliminating distractions.
-
-**Features**
-- Hides the *Shorts* section.
-- Hides videos older than a configurable number of years.
-- Hides previously watched videos.
-- Reduces algorithmic resurfacing of stale content.
-
-**Why**  
-YouTube increasingly pushes older content, Shorts, and repeat suggestions. This script restores a subscription-first browsing experience.
-
----
-
 ### `instagram.user.js`
 
 **Purpose**  
-Remove recommended, suggested, and discovery posts from the Instagram home feed.
+Remove recommended, suggested, and discovery posts from the Instagram home feed. With this turned on, you should only see content from accounts you follow, and suggested content that contains whitelisted keywords you specify.
 
 **Features**
-- Hides algorithm-driven content.
+- Hides ads, and suggested posts outside of your interests.
 - Settings panel for customization.
-- Phrase whitelist support.
-- Focus on subscription-based content only.
+- Whitelist keywords so they're never hidden.
 
 **Why**  
-Instagram optimizes for engagement loops. This script removes content you did not explicitly opt into while preserving control over discovery.
+Constantly feel unsatisfied when scrolling instagram? Instagram optimizes for engagement loops designed to make you feel disatisfied, so you scroll forever, only getting an occasional trickle of content you actually want. This script removes content you did not explicitly opt into.
 
 <p align="center">
   <img src="docs/media/Instagram%20Mobile%20Screenshot.png"
@@ -74,6 +57,23 @@ Instagram optimizes for engagement loops. This script removes content you did no
 
 **Mobile usage**  
 Works well with the **Hermit** mobile app to provide a lightweight mobile app experience.
+
+---
+
+### `youtube-filters.user.js`
+
+**Purpose**  
+Prioritize subscriptions and recent content while eliminating distractions.
+
+**Features**
+- Remembers your subscriptions, and never hides them.
+- Hides the *Shorts* section.
+- Hides videos older than a configurable number of years.
+- Hides previously watched videos.
+- Reduces algorithmic resurfacing of stale content.
+
+**Why**  
+YouTube increasingly pushes older content, Shorts, and repeat suggestions. This script restores a subscription-first browsing experience.
 
 ---
 
@@ -100,7 +100,7 @@ Efficiently process large sets of archived pages.
 ### `flickr-image-downloader.user.js`
 
 **Purpose**  
-Add a download button to Flickr image pages.
+Add a download button to Flickr image pages, along with image metadata, making attribution easier.
 
 **Use case**  
 Enable image downloads where direct download functionality is restricted.
@@ -110,7 +110,7 @@ Enable image downloads where direct download functionality is restricted.
 ### `cris-download-attrs.user.js`
 
 **Purpose**  
-Extract metadata and automate PDF downloads from CRIS using `MutationObserver`.
+Extract metadata and automate PDF downloads from CRIS.
 
 **Use case**  
 Bulk extraction of images and associated structured metadata.
@@ -120,7 +120,7 @@ Bulk extraction of images and associated structured metadata.
 ### `loc.user.js`
 
 **Purpose**  
-Download the highest-quality images from the Library of Congress and rename them using official metadata.
+Download the highest-quality images from the Library of Congress and rename them using official metadata, making attribution easier.
 
 **Use case**  
 Archival indexing and structured digital asset management.
@@ -151,10 +151,23 @@ Screenshot of the final downloaded file:
 ### `newspaper-com-download.user.js`
 
 **Purpose**  
-Download newspaper clippings and rename them using structured metadata.
+Download newspaper clippings and rename them using structured metadata, making attribution easier.
 
 **Use case**  
 Historical research and indexed archival workflows.
+
+---
+
+
+### `instagram-downloader.user.js`
+
+**Purpose**
+Allows downloading instagram photos along with the post metadata, and supports automatic downloading of all photos in a profile feed. This should theoretically be a higher quality photo than a screenshot, and since photo metadata is saved, that makes it easy to attribute the photo to the photographer down the road.
+
+**Use case**
+- Archive posts from a user who has died. 
+- Create side-by-side comparisons of a user's photo and old historic photos of the same scene.
+- Use an instagram photo in google lens
 
 ---
 
@@ -173,7 +186,7 @@ Historical research and indexed archival workflows.
    - Paste the contents of the desired `.user.js` file.
    - Save and enable.
 
----
+
 
 ## Philosophy
 

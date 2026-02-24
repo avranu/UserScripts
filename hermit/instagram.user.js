@@ -33,7 +33,7 @@
 
     // --- Route/host guards -----------------------------------------------------
     // This is necessary for Hermit, because it does not abide by @match directives for userscripts.
-    // -- therefore, with this removed, it would run on every site.
+    // With this removed, Hermit would run this script on every site.
     const isInstagramHost = () => {
         const hostname = window.location.hostname.toLowerCase();
         return (

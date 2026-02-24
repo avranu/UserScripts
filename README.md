@@ -159,7 +159,7 @@ Historical research and indexed archival workflows.
 ---
 
 
-### `instagram-downloader.user.js`
+### `instagram-download.user.js`
 
 **Purpose**
 Allows downloading instagram photos along with the post metadata, and supports automatic downloading of all photos in a profile feed. This should theoretically be a higher quality photo than a screenshot, and since photo metadata is saved, that makes it easy to attribute the photo to the photographer down the road.

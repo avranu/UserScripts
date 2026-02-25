@@ -12,6 +12,7 @@
     // Settings
     // -------------------------------------------------------------------------
     const SETTINGS_STORAGE_KEY = 'hermit-ig-settings-v1';
+    const FOLLOWED_ACCOUNTS_KEY = 'hermit-ig-followed-v1';
     const DEFAULT_SETTINGS = {
         // "full"   -> collapse entirely
         // "partial"-> collapse to a thin stub row: "Hidden post by <user>"
@@ -101,6 +102,9 @@
 
         scannedAttr: 'data-hermit-ig-scanned',
 
+        // Whether this post is from a followed account (true/false)
+        followsAttr: 'data-hermit-ig-follows',
+
         // Per-post manual toggle state (true => force shown even when globally hiding)
         forceShownAttr: 'data-hermit-ig-force-shown',
 
@@ -187,6 +191,36 @@
 
     const settings = loadSettings();
     CONFIG.whitelistPhrases = settings.whitelistPhrases;
+
+    const followedAccounts = new Set();
+
+    const loadFollowedAccounts = () => {
+        try {
+            const stored = localStorage.getItem(FOLLOWED_ACCOUNTS_KEY);
+            if (!stored) return;
+            const list = JSON.parse(stored);
+            if (Array.isArray(list)) {
+                for (const u of list) {
+                    if (u && typeof u === 'string') followedAccounts.add(u.toLowerCase());
+                }
+            }
+        } catch (e) {
+            console.warn('[IG Hermit] Failed to load followed accounts', e);
+        }
+    };
+
+    const addFollowedAccount = (username) => {
+        const lower = username.toLowerCase();
+        if (followedAccounts.has(lower)) return;
+        followedAccounts.add(lower);
+        try {
+            localStorage.setItem(FOLLOWED_ACCOUNTS_KEY, JSON.stringify([...followedAccounts]));
+        } catch (e) {
+            console.warn('[IG Hermit] Failed to save followed accounts', e);
+        }
+    };
+
+    loadFollowedAccounts();
 
     const persistSettings = () => {
         localStorage.setItem(
@@ -355,9 +389,9 @@ article[${CONFIG.whitelistTagAttr}] {
 .${CONFIG.whitelistTagClass} {
   position: absolute;
   top: 8px;
-  right: 8px;
+  right: 10em;
   z-index: 9999;
-  background: rgba(0, 160, 60, 0.85);
+  background: rgba(0, 80, 20, 0.3);
   color: #fff;
   font-size: 11px;
   font-weight: 600;
@@ -805,7 +839,7 @@ body.hermit-ig-wl-always .${CONFIG.whitelistTagClass} {
         } else {
             const reason = container.getAttribute(CONFIG.hiddenReasonAttr) || '';
             const reasonSuffix = reason
-                ? ` · ${reason.length > 40 ? reason.slice(0, 40) + '…' : reason}`
+                ? ` · (saw "${reason.length > 40 ? reason.slice(0, 40) + '…' : reason}")`
                 : '';
             text.textContent = `Hidden post by ${username}${reasonSuffix}`;
         }
@@ -998,21 +1032,63 @@ body.hermit-ig-wl-always .${CONFIG.whitelistTagClass} {
         }
     };
 
+    const getTextContentExcludingLikedBy = (article) => {
+        const likedByLink = article.querySelector('a[href*="/liked_by/"]');
+        if (!likedByLink) return article.textContent;
+
+        const likedBySection = likedByLink.closest('span[dir]') || likedByLink.parentElement;
+        if (!likedBySection || likedBySection === article) return article.textContent;
+
+        const parts = [];
+        const walker = document.createTreeWalker(
+            article,
+            NodeFilter.SHOW_TEXT,
+            { acceptNode: (node) => likedBySection.contains(node) ? NodeFilter.FILTER_SKIP : NodeFilter.FILTER_ACCEPT },
+        );
+        while (walker.nextNode()) {
+            parts.push(walker.currentNode.nodeValue);
+        }
+        return parts.join(' ');
+    };
+
     const scanArticle = (article) => {
         if (!(article instanceof Element)) return;
         if (article.getAttribute(CONFIG.hiddenMarkerAttr) === 'true') return;
         if (article.getAttribute(CONFIG.scannedAttr) === 'true') return;
 
-        const walker = document.createTreeWalker(article, NodeFilter.SHOW_TEXT, null);
-        let processed = 0;
+        const hasFollowBtn = hasFollowOnlyButton(article);
+        article.setAttribute(CONFIG.followsAttr, hasFollowBtn ? 'false' : 'true');
 
-        const whitelistMatch = hasWhitelistedPhrase(article.textContent);
+        if (!hasFollowBtn) {
+            // No Follow button → we follow this account → track and never hide
+            const username = getUsernameFromArticle(article);
+            if (username !== 'unknown') {
+                addFollowedAccount(username);
+            }
+            article.setAttribute(CONFIG.scannedAttr, 'true');
+            return;
+        }
 
-        if (!whitelistMatch && hasFollowOnlyButton(article)) {
+        // Has Follow button → not currently following, but check persisted list
+        // (handles cases where the button state differs from our saved list)
+        const username = getUsernameFromArticle(article);
+        if (username !== 'unknown' && followedAccounts.has(username.toLowerCase())) {
+            article.setAttribute(CONFIG.followsAttr, 'true');
+            article.setAttribute(CONFIG.scannedAttr, 'true');
+            return;
+        }
+
+        const whitelistMatch = hasWhitelistedPhrase(getTextContentExcludingLikedBy(article));
+
+        if (!whitelistMatch) {
             console.debug('Follow-only button match');
             hideContainerNonDestructively(article, 'Follow');
             return;
         }
+
+        // Whitelist matched — still check blacklist, but greylist is skipped
+        const walker = document.createTreeWalker(article, NodeFilter.SHOW_TEXT, null);
+        let processed = 0;
 
         while (walker.nextNode()) {
             processed += 1;
@@ -1026,21 +1102,10 @@ body.hermit-ig-wl-always .${CONFIG.whitelistTagClass} {
                 hideContainerNonDestructively(article, textNode.nodeValue.trim());
                 return;
             }
-
-            if (!whitelistMatch) {
-                const greyHit = hasGreylistedPhrase(textNode.nodeValue);
-                if (greyHit) {
-                    console.debug('Greylist hit:', greyHit, 'in', textNode.nodeValue);
-                    hideContainerNonDestructively(article, textNode.nodeValue.trim());
-                    return;
-                }
-            }
         }
 
         article.setAttribute(CONFIG.scannedAttr, 'true');
-        if (whitelistMatch) {
-            ensureWhitelistTag(article, whitelistMatch);
-        }
+        ensureWhitelistTag(article, whitelistMatch);
     };
 
     const scanOnce = () => {

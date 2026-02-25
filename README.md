@@ -107,16 +107,6 @@ Enable image downloads where direct download functionality is restricted.
 
 ---
 
-### `cris-download-attrs.user.js`
-
-**Purpose**  
-Extract metadata and automate PDF downloads from CRIS.
-
-**Use case**  
-Bulk extraction of images and associated structured metadata.
-
----
-
 ### `loc.user.js`
 
 **Purpose**  

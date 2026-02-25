@@ -29,6 +29,7 @@
             'explore',
             'trespas',
         ],
+        alwaysShowWhitelistTag: false,
     };
 
     // --- Route/host guards -----------------------------------------------------
@@ -103,10 +104,17 @@
         // Per-post manual toggle state (true => force shown even when globally hiding)
         forceShownAttr: 'data-hermit-ig-force-shown',
 
+        // Reason the post was hidden (set once, on first hide)
+        hiddenReasonAttr: 'data-hermit-ig-reason',
+
         // Stub UI for partial hide
         stubAttr: 'data-hermit-ig-stub',
         stubClass: 'hermit-ig-stub',
         stubTextClass: 'hermit-ig-stub-text',
+
+        // Whitelist match tag
+        whitelistTagAttr: 'data-hermit-ig-wl',
+        whitelistTagClass: 'hermit-ig-wl-tag',
 
         scan: {
             debounceMs: 200,
@@ -186,6 +194,7 @@
             JSON.stringify({
                 hide: settings.hide,
                 whitelistPhrases: settings.whitelistPhrases,
+                alwaysShowWhitelistTag: settings.alwaysShowWhitelistTag,
             }),
         );
     };
@@ -231,7 +240,7 @@
         for (const phrase of CONFIG.whitelistPhrases) {
             if (phrase && normalizedText.includes(phrase)) {
                 console.debug('Matched whitelist phrase (skipping greylist):', phrase);
-                return true;
+                return phrase;
             }
         }
 
@@ -260,6 +269,16 @@
         }
         console.debug('No greylist match for:', normalizedText);
         return null;
+    };
+
+    const hasFollowOnlyButton = (article) => {
+        const buttons = article.querySelectorAll('div[role="button"]');
+        for (const btn of buttons) {
+            if (btn.textContent.trim() === 'Follow') {
+                return true;
+            }
+        }
+        return false;
     };
 
     const ensureStyleTag = (id, cssText) => {
@@ -326,6 +345,37 @@
   white-space: nowrap !important;
   overflow: hidden !important;
   text-overflow: ellipsis !important;
+}
+
+/* Whitelist match tag */
+article[${CONFIG.whitelistTagAttr}] {
+  position: relative !important;
+}
+
+.${CONFIG.whitelistTagClass} {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 9999;
+  background: rgba(0, 160, 60, 0.85);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+article[${CONFIG.whitelistTagAttr}]:hover .${CONFIG.whitelistTagClass} {
+  opacity: 1;
+}
+
+body.hermit-ig-wl-always .${CONFIG.whitelistTagClass} {
+  opacity: 1;
 }
 
 /* Widget */
@@ -550,9 +600,11 @@
         const partialRadio = panel.querySelector('input[name="hermit-hide-mode"][value="partial"]');
         const fullRadio = panel.querySelector('input[name="hermit-hide-mode"][value="full"]');
         const whitelistTextarea = panel.querySelector(`#${CONFIG.ui.settingsId}-whitelist`);
+        const alwaysTagCheckbox = panel.querySelector(`#${CONFIG.ui.settingsId}-always-tag`);
         if (partialRadio) partialRadio.checked = settings.hide === 'partial';
         if (fullRadio) fullRadio.checked = settings.hide === 'full';
         if (whitelistTextarea) whitelistTextarea.value = settings.whitelistPhrases.join('\n');
+        if (alwaysTagCheckbox) alwaysTagCheckbox.checked = Boolean(settings.alwaysShowWhitelistTag);
     };
 
     const ensureSettingsPanel = () => {
@@ -602,6 +654,16 @@
         whitelistSection.appendChild(whitelistLabel);
         whitelistSection.appendChild(whitelistTextarea);
 
+        const tagSection = document.createElement('div');
+        tagSection.className = 'section';
+        const alwaysTagLabel = document.createElement('label');
+        const alwaysTagCheckbox = document.createElement('input');
+        alwaysTagCheckbox.type = 'checkbox';
+        alwaysTagCheckbox.id = `${CONFIG.ui.settingsId}-always-tag`;
+        alwaysTagLabel.appendChild(alwaysTagCheckbox);
+        alwaysTagLabel.appendChild(document.createTextNode(' Always show whitelist match tags'));
+        tagSection.appendChild(alwaysTagLabel);
+
         const actions = document.createElement('div');
         actions.className = 'actions';
         const resetButton = document.createElement('button');
@@ -622,6 +684,7 @@
         panel.appendChild(title);
         panel.appendChild(modeSection);
         panel.appendChild(whitelistSection);
+        panel.appendChild(tagSection);
         panel.appendChild(actions);
 
         (document.body || document.documentElement).appendChild(panel);
@@ -636,9 +699,11 @@
         resetButton.addEventListener('click', () => {
             settings.hide = DEFAULT_SETTINGS.hide;
             settings.whitelistPhrases = normalizeList(DEFAULT_SETTINGS.whitelistPhrases);
+            settings.alwaysShowWhitelistTag = DEFAULT_SETTINGS.alwaysShowWhitelistTag;
             CONFIG.whitelistPhrases = settings.whitelistPhrases;
             persistSettings();
             syncSettingsPanel(panel);
+            applyAlwaysShowTagClass();
             resetScans();
             scanOnce();
         });
@@ -648,9 +713,11 @@
             settings.whitelistPhrases = normalizeList(
                 whitelistTextarea.value.split(/\r?\n/),
             );
+            settings.alwaysShowWhitelistTag = alwaysTagCheckbox.checked;
             CONFIG.whitelistPhrases = settings.whitelistPhrases;
             persistSettings();
             applyHideModeToAll();
+            applyAlwaysShowTagClass();
             resetScans();
             scanOnce();
             closePanel();
@@ -733,7 +800,33 @@
         if (!text) return;
 
         const forced = container.getAttribute(CONFIG.forceShownAttr) === 'true';
-        text.textContent = forced ? `Showing post by ${username} (click to hide)` : `Hidden post by ${username}`;
+        if (forced) {
+            text.textContent = `Showing post by ${username} (click to hide)`;
+        } else {
+            const reason = container.getAttribute(CONFIG.hiddenReasonAttr) || '';
+            const reasonSuffix = reason
+                ? ` · ${reason.length > 40 ? reason.slice(0, 40) + '…' : reason}`
+                : '';
+            text.textContent = `Hidden post by ${username}${reasonSuffix}`;
+        }
+    };
+
+    const applyAlwaysShowTagClass = () => {
+        if (document.body) {
+            document.body.classList.toggle('hermit-ig-wl-always', Boolean(settings.alwaysShowWhitelistTag));
+        }
+    };
+
+    const ensureWhitelistTag = (container, phrase) => {
+        if (!(container instanceof Element)) return;
+        container.setAttribute(CONFIG.whitelistTagAttr, phrase);
+        let tag = container.querySelector(`.${CONFIG.whitelistTagClass}`);
+        if (!tag) {
+            tag = document.createElement('div');
+            tag.className = CONFIG.whitelistTagClass;
+            container.appendChild(tag);
+        }
+        tag.textContent = `✓ ${phrase}`;
     };
 
     const applyHideMode = (container) => {
@@ -834,13 +927,14 @@
         updateStubText(container, username);
     };
 
-    const hideContainerNonDestructively = (container) => {
+    const hideContainerNonDestructively = (container, reason = '') => {
         if (!state.enabled) return false;
         if (!container || container.nodeType !== Node.ELEMENT_NODE) return false;
 
         // Track that this container is under our control
         if (container.getAttribute(CONFIG.hiddenMarkerAttr) !== 'true') {
             container.setAttribute(CONFIG.hiddenMarkerAttr, 'true');
+            if (reason) container.setAttribute(CONFIG.hiddenReasonAttr, reason);
             state.hiddenCount += 1;
             updateWidgetCount();
         }
@@ -912,7 +1006,13 @@
         const walker = document.createTreeWalker(article, NodeFilter.SHOW_TEXT, null);
         let processed = 0;
 
-        const hasWhitelist = hasWhitelistedPhrase(article.textContent);
+        const whitelistMatch = hasWhitelistedPhrase(article.textContent);
+
+        if (!whitelistMatch && hasFollowOnlyButton(article)) {
+            console.debug('Follow-only button match');
+            hideContainerNonDestructively(article, 'Follow');
+            return;
+        }
 
         while (walker.nextNode()) {
             processed += 1;
@@ -923,21 +1023,24 @@
             const textNode = walker.currentNode;
             const hit = hasBlacklistedPhrase(textNode.nodeValue);
             if (hit) {
-                hideContainerNonDestructively(article);
+                hideContainerNonDestructively(article, textNode.nodeValue.trim());
                 return;
             }
 
-            if (!hasWhitelist) {
+            if (!whitelistMatch) {
                 const greyHit = hasGreylistedPhrase(textNode.nodeValue);
                 if (greyHit) {
                     console.debug('Greylist hit:', greyHit, 'in', textNode.nodeValue);
-                    hideContainerNonDestructively(article);
+                    hideContainerNonDestructively(article, textNode.nodeValue.trim());
                     return;
                 }
             }
         }
 
         article.setAttribute(CONFIG.scannedAttr, 'true');
+        if (whitelistMatch) {
+            ensureWhitelistTag(article, whitelistMatch);
+        }
     };
 
     const scanOnce = () => {
@@ -1020,6 +1123,7 @@
 
         ensureWidget();
         updateWidgetCount();
+        applyAlwaysShowTagClass();
 
         hookSpaNavigation();
 

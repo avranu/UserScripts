@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Instagram Downloader
 // @namespace    https://jmann.me
-// @version      0.1.1
+// @version      0.2.0
 // @description  Adds a download button to Instagram posts, automatically naming photos with the post metadata. Also supports automatic downloading of all photos in a profile feed.
 // @author       Jess Mann
 // @match        *://www.instagram.com/*

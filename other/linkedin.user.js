@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         LinkedIn Job Keywords Monitor
 // @namespace    https://jmann.me
-// @version      0.1.1
+// @version      0.2.0
 // @description  Monitors LinkedIn job postings for configurable keywords and displays match counts
 // @author       Jess Mann
 // @match        https://www.linkedin.com/jobs/*

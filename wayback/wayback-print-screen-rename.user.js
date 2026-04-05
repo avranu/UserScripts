@@ -3,7 +3,7 @@
 // @namespace    http://jmann.me
 // @match        https://archive.org/details/*
 // @grant        none
-// @version      0.1.1
+// @version      0.2.0
 // @author       -
 // @date         2024-05-14
 // ==/UserScript==

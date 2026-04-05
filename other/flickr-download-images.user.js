@@ -3,7 +3,7 @@
 // ==UserScript==
 // @name         Flickr - Image Downloader with Metadata
 // @namespace    http://jmann.me
-// @version      0.1.1
+// @version      0.2.0
 // @description  Add a download button to images on Flickr with proper metadata-based filenames.
 // @author       Jess Mann
 // @match        *://*flickr.com/photos/*
